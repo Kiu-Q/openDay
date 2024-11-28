@@ -196,8 +196,8 @@ class Game(Main):
 
     def win(self, level):
         self.screen.blit(BGS[0], (0,0))
-        if self.timeUsed < self.tScores[4][1]:
-            self.tScores.append(["", self.timeUsed])
+        if (self.timeUsed < self.tScores[4][1] if level ==1 else self.score > self.tScores[4][1]):
+            self.tScores.append(["", self.timeUsed if level ==1 else self.score])
             while True:
                 HIGH = [["50 points scored! Time used: %ds"%self.timeUsed, 
                     "Congratulations, your score gets into Top 5 completeing time!", 
