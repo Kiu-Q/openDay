@@ -9,7 +9,7 @@ import math
 AMENDMENT = 0
 CONFIDENCE = 0.5
 SPEED = 10
-CLEVER = 3.5
+CLEVER = 2
 LIMIT = 30
 
 BLACK = (0, 0, 0)
@@ -41,6 +41,8 @@ EXPLODE = pg.transform.scale(pg.image.load("assets/EXPLODE.png"), (W//5, W//5))
 CRACK = pg.mixer.Sound(file="assets/sound.wav")
 BEEP = pg.mixer.Sound(file="assets/BEEP.wav")
 BEEPH = pg.mixer.Sound(file="assets/BEEPH.wav")
+THU = pg.mixer.Sound(file="assets/thunder.wav")
+BEEPH = BEEP
 
 mpHands = mp.solutions.hands.Hands(
     model_complexity=0,
@@ -148,7 +150,7 @@ class Game(Main):
 
         # Spawn monsters and students with increasing frequency
         if random.randint(0, spawnThresh) == 1 or self.targets == []:
-            if random.randint(0, 20) > 1:
+            if random.randint(0, 30) > 1:
                 self.targets.append(Monster(level=3))
             else:
                 self.targets.append(Student(level=3))
@@ -211,6 +213,7 @@ class Game(Main):
                         self.targets.remove(target)
                 elif isinstance(target, Student):
                     # CPU hits student - PLAYER WINS
+                    time.sleep(0.5)
                     self.win_reason = "cpu_hit_student"
                     return True
 
@@ -222,7 +225,7 @@ class Game(Main):
                     CRACK.play()
                     
                     if isinstance(target, Thunder):
-                        BEEPH.play()
+                        THU.play()
                         # Permanent cleverness reduction
                         self.cleverness_multiplier /= 1.2
                         self.cleverness_multiplier = max(0.05, self.cleverness_multiplier)
@@ -245,6 +248,7 @@ class Game(Main):
                             
                     elif isinstance(target, Student):
                         # Player hits student - PLAYER LOSES
+                        time.sleep(0.5)
                         self.win_reason = "player_hit_student"
                         return False
 
@@ -471,6 +475,8 @@ class Monster(Object):
         self.level = level
         self.pos = self.setPos(level)
         self.pic = MONSTERS[random.randint(0, 4)]
+        randSize = random.randint(W//12, W//8)
+        self.pic = pg.transform.scale(self.pic, (randSize, randSize*self.pic.get_height()//self.pic.get_width()))
         self.rect = self.pic.get_rect()
         self.rect.center = self.pos
         
