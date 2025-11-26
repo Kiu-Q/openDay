@@ -6,8 +6,8 @@ import shelve
 import time
 import math
 
-AMENDMENT = 30
-CONFIDENCE = 0.5
+AMENDMENT = 0
+CONFIDENCE = 0.2
 SPEED = 10
 CLEVER = 2
 LIMIT = 30
@@ -37,12 +37,13 @@ MONSTERS = [pg.transform.scale(pg.image.load("assets/MONSTERS/%d.png"%i), (W//10
 THUNDER_IMG = pg.transform.scale(pg.image.load("assets/THUNDER.png"), (W//8, W//8*pg.image.load("assets/THUNDER.png").get_height()//pg.image.load("assets/THUNDER.png").get_width()))
 COUNTS = [pg.transform.scale(pg.image.load("assets/COUNTS/monophy_1-%d.png"%i), (W//2, W//2)) for i in range(49)]
 EXPLODE = pg.transform.scale(pg.image.load("assets/EXPLODE.png"), (W//5, W//5))
+NO = pg.transform.scale(pg.image.load("assets/NO.png"), (W//10, W//10))
+THN = pg.transform.scale(pg.image.load("assets/THN.png"), (W//10, W//10))
 
 CRACK = pg.mixer.Sound(file="assets/sound.wav")
-BEEP = pg.mixer.Sound(file="assets/BEEP.wav")
-BEEPH = pg.mixer.Sound(file="assets/BEEPH.wav")
+BEEP = pg.mixer.Sound(file="assets/BEE.wav")
+BEEPH = pg.mixer.Sound(file="assets/BEEP.wav")
 THU = pg.mixer.Sound(file="assets/thunder.wav")
-BEEPH = BEEP
 
 mpHands = mp.solutions.hands.Hands(
     model_complexity=0,
@@ -87,12 +88,15 @@ class Main:
             self.space()
 
     def count(self):
-        for cnt in range(len(COUNTS)):
+        total_frames = len(COUNTS)
+        play_times = 4
+        interval = max(1, total_frames // play_times)
+        for cnt in range(total_frames):
             self.screen.blit(BGS[3], (0,0))
-            self.screen.blit(COUNTS[cnt], (W//2-COUNTS[cnt%len(COUNTS)].get_width()//2, H//2-COUNTS[cnt%len(COUNTS)].get_height()//2))
-            if cnt%len(COUNTS)//5 == 0 or cnt == len(COUNTS): 
-                BEEP.play()
-            time.sleep(3/len(COUNTS))
+            frame = COUNTS[cnt]
+            self.screen.blit(frame, (W//2-frame.get_width()//2, H//2-frame.get_height()//2))
+            if (cnt % interval == 0) or (cnt == total_frames - 1): BEEP.play()
+            time.sleep(1/total_frames)
             pg.display.update()
 
 class Game(Main):
@@ -100,7 +104,7 @@ class Game(Main):
         super().__init__()
         self.compClev = 0.0
         self.cleverness_multiplier = 1.0
-        self.win_reason = None  # Track reason for win/loss
+        self.win_reason = None
 
     def thunderChallenge(self):
         with shelve.open(FILE) as d: 
@@ -110,9 +114,9 @@ class Game(Main):
         self.printText(INTRO[0])
         
         for i in range(5):
-            screen.blit(FONT.render(RANK[i], True, BLACK), (W//2-200, H//3+240+30*i))
-            screen.blit(FONT.render(self.tScores[i][0].strip(), True, BLACK), (W//2-100, H//3+240+30*i))
-            screen.blit(FONT.render("Score: %d"%self.tScores[i][1], True, BLACK), (W//2+100, H//3+240+30*i))
+            screen.blit(FONT.render(RANK[i], True, BLACK), (W//2-200, H//3+210+30*i))
+            screen.blit(FONT.render(self.tScores[i][0].strip(), True, BLACK), (W//2-100, H//3+210+30*i))
+            screen.blit(FONT.render("Score: %d"%self.tScores[i][1], True, BLACK), (W//2+100, H//3+210+30*i))
         
         pg.display.update()
         self.space()
@@ -189,13 +193,12 @@ class Game(Main):
         if results.multi_hand_landmarks:
             for handLMs in results.multi_hand_landmarks:
                 plrPos = [W-(handLMs.landmark[7].x * W), handLMs.landmark[7].y * H+AMENDMENT]
+                #
             self.player.update(plrPos)
 
         # Update computer AI
-        if plrPos: 
-            self.computer.updateAi(self.targets, timeElapsed, plrPos)
-        else: 
-            self.computer.updateAi(self.targets, timeElapsed, self.player.pos)
+        if plrPos: self.computer.updateAi(self.targets, timeElapsed, plrPos)
+        else: self.computer.updateAi(self.targets, timeElapsed, self.player.pos)
 
         # Check computer collisions
         for target in self.targets[:]:
@@ -211,8 +214,9 @@ class Game(Main):
                     if target in self.targets:
                         self.targets.remove(target)
                 elif isinstance(target, Student):
-                    # CPU hits student - PLAYER WINS
-                    time.sleep(0.5)
+                    self.screen.blit(NO, (target.pos[0], target.pos[1]))
+                    pg.display.update()
+                    time.sleep(1)
                     self.win_reason = "cpu_hit_student"
                     return True
 
@@ -220,20 +224,24 @@ class Game(Main):
         if results.multi_hand_landmarks:
             for target in self.targets[:]:
                 if target.collide(self.player.pos):
-                    self.screen.blit(EXPLODE, (target.pos[0]-100, target.pos[1]-100))
                     CRACK.play()
                     
                     if isinstance(target, Thunder):
+                        self.screen.blit(EXPLODE, (target.pos[0]-100, target.pos[1]-100))
                         THU.play()
                         # Permanent cleverness reduction
-                        self.cleverness_multiplier /= 1.2
+                        self.cleverness_multiplier /= 1.1
                         self.cleverness_multiplier = max(0.05, self.cleverness_multiplier)
                         
                         # Kill all monsters on screen
                         monstersToRemove = [t for t in self.targets if isinstance(t, Monster)]
+                        self.screen.blit(THN, (W//3, 0))
+                        self.screen.blit(THN, (W-W//3, 0))
                         for monster in monstersToRemove:
                             self.score += 1
                             if monster in self.targets:
+                                self.screen.blit(EXPLODE, (monster.pos[0]-W//20, monster.pos[1]-W//20))
+                                self.screen.blit(THN, (monster.pos[0]-50, monster.pos[1]-monster.pic.get_height()))
                                 self.targets.remove(monster)
                         
                         # Remove thunder
@@ -241,18 +249,19 @@ class Game(Main):
                             self.targets.remove(target)
                             
                     elif isinstance(target, Monster):
+                        self.screen.blit(EXPLODE, (target.pos[0]-W//20, target.pos[1]-W//20))
                         self.score += 1
                         if target in self.targets:
                             self.targets.remove(target)
                             
                     elif isinstance(target, Student):
-                        # Player hits student - PLAYER LOSES
-                        time.sleep(0.5)
+                        self.screen.blit(NO, (plrPos[0]-W//20, plrPos[1]-W//20))
+                        pg.display.update()
+                        time.sleep(1)
                         self.win_reason = "player_hit_student"
                         return False
-
-        time.sleep(0.02)
         pg.display.update()
+        time.sleep(0.01)
         return self.run()
 
     def checkWinner(self):
@@ -491,13 +500,14 @@ class Thunder(Object):
         self.level = level
         self.pos = self.setPos(level)
         self.pic = THUNDER_IMG
+        spd = random.randint(SPEED * 5, SPEED * 5 + 50)
+        self.pic = pg.transform.scale(self.pic, (spd*2.5, spd*2.5*self.pic.get_height()//self.pic.get_width()))
         self.rect = self.pic.get_rect()
         self.rect.center = self.pos
         
         centerX, centerY = W//2, H//2
         angle = math.atan2(centerY - self.pos[1], centerX - self.pos[0])
         angle += random.uniform(-0.5, 0.5)
-        spd = random.randint(SPEED * 5, SPEED * 5 + 50)
         self.vel = (math.cos(angle) * spd, math.sin(angle) * spd)
 
 # Main game loop
