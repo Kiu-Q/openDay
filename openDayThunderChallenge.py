@@ -6,7 +6,7 @@ import shelve
 import time
 import math
 
-AMENDMENT = 0
+AMENDMENT = 30
 CONFIDENCE = 0.5
 SPEED = 10
 CLEVER = 2
@@ -55,9 +55,8 @@ RANK = ["1st", "2nd", "3rd", "4th", "5th"]
 
 INTRO = [["Thunder Challenge: 30 SECOND SURVIVAL vs COMPUTER.",
          "Monsters come from ALL directions!",
-         "THUNDER power-up appears at 5+ marks!",
-         "Collect THUNDER to weaken CPU permanently!",
          "Beat the CPU score within 30 seconds to WIN!",
+         "Collect THUNDER power-up to weaken CPU!",
          "Press SPACE to start",
          "Top 5 Scores: "]]
 
