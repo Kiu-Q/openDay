@@ -9,7 +9,7 @@ import math
 AMENDMENT = 0
 CONFIDENCE = 0.5
 SPEED = 10
-CLEVER = 4
+CLEVER = 3.5
 LIMIT = 30
 
 BLACK = (0, 0, 0)
@@ -30,11 +30,11 @@ FONT = pg.font.SysFont(FONTTYPE, SIZE)
 W, H = int(pg.display.Info().current_w*0.9), int(pg.display.Info().current_h*0.9)
 
 SHOOTER = pg.transform.scale(pg.image.load("assets/shooter.png"), (W//5, W//5))
-COMPUTER = pg.transform.scale(pg.image.load("assets/shooter.png"), (W//5, W//5))
+COMPUTER = pg.transform.scale(pg.image.load("assets/shooter.png"), (W//8, W//8))
 BGS = [pg.transform.scale(pg.image.load("assets/BGS/%d.png"%i), (W+30, H+100)) for i in range(4)]
-STUDENTS = [pg.transform.scale(pg.image.load("assets/STUDENTS/%d.png"%i), (W//10, W//10*pg.image.load("assets/STUDENTS/%d.png"%i).get_height()//pg.image.load("assets/STUDENTS/%d.png"%i).get_width())) for i in range(4)]
+STUDENTS = [pg.transform.scale(pg.image.load("assets/STUDENTS/%d.png"%i), (W//12, W//12*pg.image.load("assets/STUDENTS/%d.png"%i).get_height()//pg.image.load("assets/STUDENTS/%d.png"%i).get_width())) for i in range(4)]
 MONSTERS = [pg.transform.scale(pg.image.load("assets/MONSTERS/%d.png"%i), (W//10, W//10*pg.image.load("assets/MONSTERS/%d.png"%i).get_height()//pg.image.load("assets/MONSTERS/%d.png"%i).get_width())) for i in range(5)]
-THUNDER_IMG = pg.transform.scale(pg.image.load("assets/THUNDER.png"), (W//10, W//10*pg.image.load("assets/THUNDER.png").get_height()//pg.image.load("assets/THUNDER.png").get_width()))
+THUNDER_IMG = pg.transform.scale(pg.image.load("assets/THUNDER.png"), (W//8, W//8*pg.image.load("assets/THUNDER.png").get_height()//pg.image.load("assets/THUNDER.png").get_width()))
 COUNTS = [pg.transform.scale(pg.image.load("assets/COUNTS/monophy_1-%d.png"%i), (W//2, W//2)) for i in range(49)]
 EXPLODE = pg.transform.scale(pg.image.load("assets/EXPLODE.png"), (W//5, W//5))
 
@@ -91,7 +91,7 @@ class Main:
             self.screen.blit(COUNTS[cnt], (W//2-COUNTS[cnt%len(COUNTS)].get_width()//2, H//2-COUNTS[cnt%len(COUNTS)].get_height()//2))
             if cnt%len(COUNTS)//5 == 0 or cnt == len(COUNTS): 
                 BEEP.play()
-            time.sleep(5/len(COUNTS))
+            time.sleep(3/len(COUNTS))
             pg.display.update()
 
 class Game(Main):
@@ -148,7 +148,7 @@ class Game(Main):
 
         # Spawn monsters and students with increasing frequency
         if random.randint(0, spawnThresh) == 1 or self.targets == []:
-            if random.randint(0, 10) > 2:
+            if random.randint(0, 20) > 1:
                 self.targets.append(Monster(level=3))
             else:
                 self.targets.append(Student(level=3))
@@ -224,7 +224,7 @@ class Game(Main):
                     if isinstance(target, Thunder):
                         BEEPH.play()
                         # Permanent cleverness reduction
-                        self.cleverness_multiplier /= 1.5
+                        self.cleverness_multiplier /= 1.2
                         self.cleverness_multiplier = max(0.05, self.cleverness_multiplier)
                         
                         # Kill all monsters on screen
@@ -387,7 +387,7 @@ class Computer(Object):
         
         for t in targets:
             if isinstance(t, Thunder):
-                continue  # CPU cannot detect Thunder
+                stds.append(t)  # CPU cannot detect Thunder
             
             if isinstance(t, Monster):
                 dSq = (t.pos[0] - self.pos[0])**2 + (t.pos[1] - self.pos[1])**2
@@ -462,7 +462,7 @@ class Student(Object):
         centerX, centerY = W//2, H//2
         angle = math.atan2(centerY - self.pos[1], centerX - self.pos[0])
         angle += random.uniform(-0.5, 0.5)
-        spd = random.randint(SPEED, SPEED + 5) *1.5
+        spd = random.randint(SPEED, SPEED + 5) *3
         self.vel = (math.cos(angle) * spd, math.sin(angle) * spd)
 
 class Monster(Object):
