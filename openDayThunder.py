@@ -11,7 +11,7 @@ CONFIDENCE = 0.5
 SPEED = 10
 SCORE = 0
 LIMIT = 20
-CLEVER = 20
+CLEVER = 5
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -73,7 +73,7 @@ class Main:
         self.screen = screen
 
     def main(self):
-        self.game = Game().level1()
+        self.game = Game().level3()
         if self.game: self.game = Game().level2()
         if self.game: self.game = Game().level3()
 
