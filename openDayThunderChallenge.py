@@ -16,8 +16,6 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 RED = (255, 0 ,0)
 BLUE = (0, 0, 255)
-GREEN = (0, 255, 0)
-YELLOW = (255, 255, 0)
 
 FONTTYPE = "comicsans"
 SIZE = 30
@@ -34,21 +32,21 @@ COMPUTER = pg.transform.scale(pg.image.load("assets/shooter.png"), (W//8, W//8))
 BGS = [pg.transform.scale(pg.image.load("assets/BGS/%d.png"%i), (W+30, H+100)) for i in range(4)]
 STUDENTS = [pg.transform.scale(pg.image.load("assets/STUDENTS/%d.png"%i), (W//12, W//12*pg.image.load("assets/STUDENTS/%d.png"%i).get_height()//pg.image.load("assets/STUDENTS/%d.png"%i).get_width())) for i in range(4)]
 MONSTERS = [pg.transform.scale(pg.image.load("assets/MONSTERS/%d.png"%i), (W//10, W//10*pg.image.load("assets/MONSTERS/%d.png"%i).get_height()//pg.image.load("assets/MONSTERS/%d.png"%i).get_width())) for i in range(5)]
-THUNDER_IMG = pg.transform.scale(pg.image.load("assets/THUNDER.png"), (W//8, W//8*pg.image.load("assets/THUNDER.png").get_height()//pg.image.load("assets/THUNDER.png").get_width()))
+THUNDER = pg.transform.scale(pg.image.load("assets/THUNDER.png"), (W//8, W//8*pg.image.load("assets/THUNDER.png").get_height()//pg.image.load("assets/THUNDER.png").get_width()))
 COUNTS = [pg.transform.scale(pg.image.load("assets/COUNTS/monophy_1-%d.png"%i), (W//2, W//2)) for i in range(49)]
 EXPLODE = pg.transform.scale(pg.image.load("assets/EXPLODE.png"), (W//5, W//5))
 NO = pg.transform.scale(pg.image.load("assets/NO.png"), (W//10, W//10))
 THN = pg.transform.scale(pg.image.load("assets/THN.png"), (W//10, W//10))
 
-CRACK = pg.mixer.Sound(file="assets/sound.wav")
 BEEP = pg.mixer.Sound(file="assets/BEE.wav")
 BEEPH = pg.mixer.Sound(file="assets/BEEP.wav")
+CRACK = pg.mixer.Sound(file="assets/sound.wav")
 THU = pg.mixer.Sound(file="assets/thunder.wav")
 
 mpHands = mp.solutions.hands.Hands(
     model_complexity=0,
     min_detection_confidence=CONFIDENCE,
-    min_tracking_confidence=CONFIDENCE)
+    min_tracking_confidence=CONFIDENCE+0.5)
 
 CAP = cv2.VideoCapture(0)
 CAPTION = "HFC Info Day - Thunder Challenge (30 seconds)"
@@ -499,7 +497,7 @@ class Thunder(Object):
         super().__init__()
         self.level = level
         self.pos = self.setPos(level)
-        self.pic = THUNDER_IMG
+        self.pic = THUNDER
         spd = random.randint(SPEED * 5, SPEED * 5 + 50)
         self.pic = pg.transform.scale(self.pic, (spd*2.5, spd*2.5*self.pic.get_height()//self.pic.get_width()))
         self.rect = self.pic.get_rect()
