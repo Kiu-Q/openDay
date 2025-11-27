@@ -8,7 +8,7 @@ import math
 
 AMENDMENT = 0
 CONFIDENCE = 0.2
-SPEED = 10
+SPEED = 5
 CLEVER = 2
 LIMIT = 30
 
@@ -49,7 +49,7 @@ mpHands = mp.solutions.hands.Hands(
     min_tracking_confidence=CONFIDENCE+0.5)
 
 CAP = cv2.VideoCapture(0)
-CAPTION = "HFC Info Day - Thunder Challenge (30 seconds)"
+CAPTION = "HFC Info Day - Thunder Challenge"
 RANK = ["1st", "2nd", "3rd", "4th", "5th"]
 
 INTRO = [["Thunder Challenge: 30 SECOND SURVIVAL vs COMPUTER.",
@@ -499,7 +499,7 @@ class Thunder(Object):
         self.pos = self.setPos(level)
         self.pic = THUNDER
         spd = random.randint(SPEED * 5, SPEED * 5 + 50)
-        self.pic = pg.transform.scale(self.pic, (spd*2.5, spd*2.5*self.pic.get_height()//self.pic.get_width()))
+        self.pic = pg.transform.scale(self.pic, (spd*3, spd*3*self.pic.get_height()//self.pic.get_width()))
         self.rect = self.pic.get_rect()
         self.rect.center = self.pos
         
