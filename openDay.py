@@ -44,7 +44,7 @@ CRACK = pg.mixer.Sound(file="assets/sound.wav")
 THU = pg.mixer.Sound(file="assets/thunder.wav")
 
 mpHands = mp.solutions.hands.Hands(
-    model_complexity=0,
+    model_complexity=1,
     min_detection_confidence=CONFIDENCE,
     min_tracking_confidence=CONFIDENCE+0.5)
 
@@ -499,7 +499,7 @@ class Thunder(Object):
         self.pos = self.setPos(level)
         self.pic = THUNDER
         spd = random.randint(SPEED * 5, SPEED * 5 + 50)
-        self.pic = pg.transform.scale(self.pic, (spd*3, spd*3*self.pic.get_height()//self.pic.get_width()))
+        self.pic = pg.transform.scale(self.pic, (spd*4, spd*4*self.pic.get_height()//self.pic.get_width()))
         self.rect = self.pic.get_rect()
         self.rect.center = self.pos
         

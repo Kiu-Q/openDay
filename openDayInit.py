@@ -8,8 +8,8 @@ import math
 
 AMENDMENT = 0
 CONFIDENCE = 0.2
-SPEED = 5
-CLEVER = 2
+SPEED = 10
+CLEVER = 3
 LIMIT = 30
 
 BLACK = (0, 0, 0)
@@ -499,7 +499,7 @@ class Thunder(Object):
         self.pos = self.setPos(level)
         self.pic = THUNDER
         spd = random.randint(SPEED * 5, SPEED * 5 + 50)
-        self.pic = pg.transform.scale(self.pic, (spd*3, spd*3*self.pic.get_height()//self.pic.get_width()))
+        self.pic = pg.transform.scale(self.pic, (spd*2, spd*2*self.pic.get_height()//self.pic.get_width()))
         self.rect = self.pic.get_rect()
         self.rect.center = self.pos
         
