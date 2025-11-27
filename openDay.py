@@ -20,7 +20,7 @@ BLUE = (0, 0, 255)
 FONTTYPE = "comicsans"
 SIZE = 30
 FILE = "src/file"
-TSCORE = 'tScore3'
+TSCORE = 'tScore'
 
 pg.init()
 FONT = pg.font.SysFont(FONTTYPE, SIZE)
