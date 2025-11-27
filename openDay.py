@@ -28,7 +28,7 @@ FONT = pg.font.SysFont(FONTTYPE, SIZE)
 W, H = int(pg.display.Info().current_w*0.9), int(pg.display.Info().current_h*0.9)
 
 SHOOTER = pg.transform.scale(pg.image.load("assets/shooter.png"), (W//5, W//5))
-COMPUTER = pg.transform.scale(pg.image.load("assets/shooter.png"), (W//8, W//8))
+COMPUTER = pg.transform.scale(pg.image.load("assets/shooter.png"), (W//20, W//20))
 BGS = [pg.transform.scale(pg.image.load("assets/BGS/%d.png"%i), (W+30, H+100)) for i in range(4)]
 STUDENTS = [pg.transform.scale(pg.image.load("assets/STUDENTS/%d.png"%i), (W//12, W//12*pg.image.load("assets/STUDENTS/%d.png"%i).get_height()//pg.image.load("assets/STUDENTS/%d.png"%i).get_width())) for i in range(4)]
 MONSTERS = [pg.transform.scale(pg.image.load("assets/MONSTERS/%d.png"%i), (W//10, W//10*pg.image.load("assets/MONSTERS/%d.png"%i).get_height()//pg.image.load("assets/MONSTERS/%d.png"%i).get_width())) for i in range(5)]
@@ -177,8 +177,8 @@ class Game(Main):
         # Display game info
         time_color = RED if timeRemaining <= 5 else (RED if timeRemaining <= 10 else BLACK)
         self.screen.blit(FONT.render(f"Time: {timeRemaining}s", True, time_color), (10, 10))
-        self.screen.blit(FONT.render(f"P: {self.score} vs CPU: {self.compScore}", True, BLUE), (10, 40))
-        self.screen.blit(FONT.render(f"CPU Cleverness: {self.compClev:.2f}", True, RED), (10, 70))
+        self.screen.blit(FONT.render(f"P: {self.score} vs CPU: {self.compScore}", True, BLACK), (10, 40))
+        self.screen.blit(FONT.render(f"CPU Cleverness: {self.compClev:.2f}", True, BLUE), (10, 70))
 
         # Check if time is up
         if timeRemaining <= 0:
