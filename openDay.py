@@ -189,9 +189,10 @@ class Game(Main):
         results = mpHands.process(cv2.cvtColor(CAP.read()[1], cv2.COLOR_BGR2RGB))
         
         if results.multi_hand_landmarks:
+            plrPos = [0, 0]
             for handLMs in results.multi_hand_landmarks:
-                plrPos = [W-(handLMs.landmark[7].x * W), handLMs.landmark[7].y * H+AMENDMENT]
-                #
+                if plrPos == [0, 0] or handLMs.landmark[7].y * H < plrPos[1]:
+                    plrPos = [W-(handLMs.landmark[7].x * W), handLMs.landmark[7].y * H+AMENDMENT]
             self.player.update(plrPos)
 
         # Update computer AI
