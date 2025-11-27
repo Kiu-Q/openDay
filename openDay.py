@@ -458,7 +458,7 @@ class Computer(Object):
         
         self.rect.center = self.pos
         self.screen.blit(self.pic, self.rect)
-        lbl = FONT.render("CPU", True, RED)
+        lbl = FONT.render("CPU", True, BLUE)
         self.screen.blit(lbl, (self.pos[0], self.pos[1]-40))
 
 class Student(Object):
